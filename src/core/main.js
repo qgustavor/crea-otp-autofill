@@ -37,7 +37,7 @@ export async function init (platform) {
 
   // Waits for the DOM to load
   if (document.readyState === 'loading') {
-    await new Promise(r => document.addEventListener('DOMContentLoaded', r))
+    await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve))
   }
 
   // Adds a wait message to the CREA loading screen
@@ -63,15 +63,18 @@ function injectSettingsButton () {
   if (!document.body) return
 
   const btn = document.createElement('div')
-  btn.innerHTML = '⚙️'
+  
+  btn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`
   btn.title = 'CREA OTP Autofill — Configurações'
+  
+  // Placed on the right side with z-index: 9998 so it stays hidden behind CREA's #loading-screen (z-index: 9999)
   btn.style.cssText = `
-    position: fixed; bottom: 12px; right: 12px; z-index: 9999;
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(255,255,255,0.9); box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 18px; user-select: none;
-    transition: transform 0.15s;
+    position: fixed !important; bottom: 12px !important; right: 12px !important; z-index: 9998 !important;
+    width: 36px !important; height: 36px !important; border-radius: 50% !important;
+    background: rgba(255,255,255,0.9) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    cursor: pointer !important; color: #555 !important;
+    transition: transform 0.15s !important;
   `
   btn.addEventListener('mouseenter', () => { btn.style.transform = 'scale(1.15)' })
   btn.addEventListener('mouseleave', () => { btn.style.transform = 'scale(1)' })
@@ -252,11 +255,15 @@ async function watchForInvalidCode (config, emailPattern) {
 }
 
 /**
- * Hides the CREA loading screen.
+ * Hides the CREA loading screen, releasing our lock so the original 
+ * layout/inline styles can take effect.
  */
 function hideLoadingScreen () {
   const screen = document.getElementById('loading-screen')
-  if (screen) screen.style.display = 'none'
+  if (screen) {
+    screen.classList.remove('coaf-force-loading')
+    screen.style.display = 'none'
+  }
 }
 
 /**
@@ -277,5 +284,5 @@ async function waitForElement (selector, timeout) {
 
 /** @param {number} ms */
 function sleep (ms) {
-  return new Promise(r => setTimeout(r, ms))
+  return new Promise(resolve => setTimeout(resolve, ms))
 }

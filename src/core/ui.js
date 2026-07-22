@@ -8,16 +8,22 @@
 /* === CSS === */
 
 export const STYLES = /* css */ `
+/* Force loading screen to stay visible and flow vertically while we process */
+#loading-screen.coaf-force-loading {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
 /* Main panel — overlays the CREA content area */
 .coaf-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
-  animation: coaf-fade-in 0.2s ease;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  animation: coaf-fade-in 0.2s ease !important;
 }
 
 @keyframes coaf-fade-in {
@@ -26,184 +32,205 @@ export const STYLES = /* css */ `
 }
 
 .coaf-panel {
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -25px 37.7px 11.3px rgba(8, 143, 220, 0.07);
-  padding: 28px 32px;
-  max-width: 480px;
-  width: 90vw;
-  font-family: 'Open Sans', Arial, sans-serif;
-  color: #333;
-  line-height: 1.5;
+  background: #fff !important;
+  border-radius: 4px !important;
+  box-shadow: 0 -25px 37.7px 11.3px rgba(8, 143, 220, 0.07) !important;
+  padding: 28px 32px !important;
+  max-width: 600px !important;
+  width: 90vw !important;
+  font-family: 'Open Sans', Arial, sans-serif !important;
+  color: #333 !important;
+  line-height: 1.5 !important;
+  text-align: left !important;
+}
+
+/* Force alignment and fonts to prevent CREA's global CSS overrides */
+.coaf-panel h2, .coaf-panel p, .coaf-panel li, .coaf-panel div, .coaf-panel span, .coaf-panel label, .coaf-panel strong,
+.coaf-msg, .coaf-msg p, .coaf-msg strong {
+  font-family: 'Open Sans', Arial, sans-serif !important;
+  line-height: 1.5 !important;
+  text-align: left !important;
 }
 
 .coaf-panel h2 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 6px;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #1a1a1a !important;
+  margin: 0 0 6px !important;
 }
 
 .coaf-panel p, .coaf-panel li {
-  font-size: 14px;
-  color: #555;
-  margin: 6px 0;
+  font-size: 14px !important;
+  color: #555 !important;
+  margin: 6px 0 !important;
 }
 
 .coaf-panel ol {
-  padding-left: 20px;
-  margin: 10px 0;
+  padding-left: 20px !important;
+  margin: 10px 0 !important;
 }
 
 .coaf-panel ol li {
-  margin: 8px 0;
+  margin: 8px 0 !important;
 }
 
 /* Generated code area (Apps Script) */
 .coaf-code-area {
-  width: 100%;
-  min-height: 80px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 12px;
-  background: #f7f9fb;
-  color: #333;
-  resize: vertical;
-  box-sizing: border-box;
+  width: 100% !important;
+  min-height: 80px !important;
+  padding: 10px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-size: 12px !important;
+  background: #f7f9fb !important;
+  color: #333 !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
 }
 
 .coaf-code-area:focus {
-  border-color: #5cb5e3;
-  outline: none;
+  border-color: #337ab7 !important;
+  outline: none !important;
 }
 
 /* URL Input */
 .coaf-input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: 'Open Sans', Arial, sans-serif;
-  box-sizing: border-box;
-  margin: 4px 0 8px;
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-family: 'Open Sans', Arial, sans-serif !important;
+  box-sizing: border-box !important;
+  margin: 4px 0 8px !important;
 }
 
 .coaf-input:focus {
-  border-color: #5cb5e3;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(92, 181, 227, 0.2);
+  border-color: #337ab7 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(51, 122, 183, 0.2) !important;
 }
 
-/* Buttons — style similar to the CREA "Entrar" button */
+/* Buttons */
 .coaf-btn {
-  display: inline-block;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: 'Open Sans', Arial, sans-serif;
-  cursor: pointer;
-  transition: background 0.15s;
-  line-height: 1;
+  display: inline-block !important;
+  padding: 10px 20px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-family: 'Open Sans', Arial, sans-serif !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
+  line-height: 1 !important;
 }
 
 .coaf-btn-primary {
-  background: #5cb5e3;
-  color: #fff;
+  background: #337ab7 !important;
+  color: #fff !important;
 }
 
 .coaf-btn-primary:hover {
-  background: #4aa3d1;
+  background: #286090 !important;
 }
 
 .coaf-btn-secondary {
-  background: #e9ecef;
-  color: #555;
+  background: #e9ecef !important;
+  color: #555 !important;
 }
 
 .coaf-btn-secondary:hover {
-  background: #dde1e5;
+  background: #dde1e5 !important;
 }
 
 .coaf-btn-danger {
-  background: #e74c3c;
-  color: #fff;
+  background: #e74c3c !important;
+  color: #fff !important;
 }
 
 .coaf-btn-danger:hover {
-  background: #c0392b;
+  background: #c0392b !important;
 }
 
 .coaf-btn + .coaf-btn {
-  margin-left: 8px;
+  margin-left: 8px !important;
 }
 
 .coaf-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 18px;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  margin-top: 18px !important;
 }
 
-/* Inline messages (error / info) — appears on the CREA OTP screen */
+/* Inline messages (error / info) — Floats top-right */
 .coaf-msg {
-  margin: 16px auto;
-  max-width: 400px;
-  padding: 14px 18px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: 'Open Sans', Arial, sans-serif;
-  line-height: 1.5;
-  text-align: center;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 10001 !important;
+  margin: 0 !important;
+  max-width: 400px !important;
+  padding: 14px 18px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.coaf-msg p {
+  margin: 0 !important;
 }
 
 .coaf-msg-error {
-  background: #fef2f2;
-  border: 1px solid #fca5a5;
-  color: #991b1b;
+  background: #fef2f2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #991b1b !important;
 }
 
 .coaf-msg-info {
-  background: #eff6ff;
-  border: 1px solid #93c5fd;
-  color: #1e40af;
+  background: #eff6ff !important;
+  border: 1px solid #93c5fd !important;
+  color: #1e40af !important;
 }
 
 .coaf-msg a, .coaf-panel a {
-  color: #5cb5e3;
-  text-decoration: underline;
-  cursor: pointer;
+  color: #337ab7 !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+.coaf-msg a {
+  display: inline-block !important;
+  margin-top: 8px !important;
 }
 
 .coaf-msg a:hover, .coaf-panel a:hover {
-  color: #4aa3d1;
+  color: #286090 !important;
 }
 
 /* Wizard steps */
 .coaf-step-indicator {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 12px;
+  font-size: 12px !important;
+  color: #999 !important;
+  margin-bottom: 12px !important;
 }
 
 /* Separator */
 .coaf-sep {
-  border: none;
-  border-top: 1px solid #e9ecef;
-  margin: 16px 0;
+  border: none !important;
+  border-top: 1px solid #e9ecef !important;
+  margin: 16px 0 !important;
 }
 
 /* Label */
 .coaf-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 4px;
+  display: block !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #555 !important;
+  margin-bottom: 4px !important;
 }
 
 /* Inline validation */
@@ -212,22 +239,24 @@ export const STYLES = /* css */ `
 }
 
 .coaf-error-text {
-  font-size: 12px;
-  color: #e74c3c;
-  margin: 2px 0 8px;
+  font-size: 12px !important;
+  color: #e74c3c !important;
+  margin: 2px 0 8px !important;
+  text-align: left !important;
+  font-family: 'Open Sans', Arial, sans-serif !important;
 }
 
 /* Loading spinner */
 .coaf-spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #ccc;
-  border-top-color: #5cb5e3;
-  border-radius: 50%;
-  animation: coaf-spin 0.6s linear infinite;
-  vertical-align: middle;
-  margin-right: 6px;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid #ccc !important;
+  border-top-color: #337ab7 !important;
+  border-radius: 50% !important;
+  animation: coaf-spin 0.6s linear infinite !important;
+  vertical-align: middle !important;
+  margin-right: 6px !important;
 }
 
 @keyframes coaf-spin {
@@ -256,14 +285,15 @@ export function setLoadingMessage (text) {
   const screen = document.getElementById('loading-screen')
   if (!screen) return
 
-  // Adjusts the style of the loading-screen to show text below the logo
-  screen.style.flexDirection = 'column'
+  // Adds a class with 'display: flex !important' to prevent CREA's setTimeout from hiding it
+  screen.classList.add('coaf-force-loading')
 
   let msgEl = document.getElementById('coaf-loading-msg')
   if (!msgEl) {
     msgEl = document.createElement('p')
     msgEl.id = 'coaf-loading-msg'
-    msgEl.style.cssText = 'color: white; font-family: "Open Sans", Arial, sans-serif; font-size: 16px; margin-top: 18px; text-align: center;'
+    // Protects styles against global generic rules
+    msgEl.style.cssText = 'color: white !important; font-family: "Open Sans", Arial, sans-serif !important; font-size: 16px !important; margin-top: 18px !important; text-align: center !important;'
     screen.appendChild(msgEl)
   }
   msgEl.textContent = text
@@ -285,23 +315,19 @@ export function showInlineMessage (message, opts = {}) {
 
   const el = h(`
     <div class="coaf-msg ${typeClass}">
-      <p style="margin: 0 0 ${opts.actionLabel ? '10px' : '0'}">${message}</p>
+      <p>${message}</p>
     </div>
   `)
 
   if (opts.actionLabel && opts.onAction) {
-    const btn = h(`<a href="#">${opts.actionLabel}</a>`)
+    const btn = h(`<button>${opts.actionLabel}</button>`)
+    btn.className = 'coaf-btn coaf-btn-primary'
     btn.addEventListener('click', e => { e.preventDefault(); opts.onAction() })
-    el.querySelector('p').after(btn)
+    el.appendChild(btn)
   }
 
-  // Inserts right after the OTP form, or into the body as fallback
-  const otpForm = document.querySelector('[name="validaLoginForm"]') || document.querySelector('.coaf-msg-anchor')
-  if (otpForm) {
-    otpForm.after(el)
-  } else {
-    document.body.appendChild(el)
-  }
+  // Floating at top right, so just append it to body safely
+  document.body.appendChild(el)
 }
 
 /* === Overlay / Panel === */
@@ -343,7 +369,8 @@ export function openPanel (contentEl) {
  */
 export function showSetupWizard (emailPattern, appsScriptCode, token) {
   return new Promise(resolve => {
-    let currentStep = 1
+    let currentStep = 0
+    let flow = null // 'new' | 'existing'
     const totalSteps = 3
 
     const container = document.createElement('div')
@@ -352,12 +379,54 @@ export function showSetupWizard (emailPattern, appsScriptCode, token) {
     function render () {
       container.innerHTML = ''
 
-      if (currentStep === 1) container.appendChild(renderStep1())
-      else if (currentStep === 2) container.appendChild(renderStep2())
-      else if (currentStep === 3) container.appendChild(renderStep3())
+      if (currentStep === 0) {
+        container.appendChild(renderStep0())
+      } else if (flow === 'new') {
+        if (currentStep === 1) container.appendChild(renderStep1())
+        else if (currentStep === 2) container.appendChild(renderStep2())
+        else if (currentStep === 3) container.appendChild(renderStep3())
+      } else if (flow === 'existing') {
+        if (currentStep === 1) container.appendChild(renderAltStep1())
+      }
     }
 
-    /* === Step 1: Copy the Apps Script code === */
+    /* === Step 0: Choice (New vs Existing) === */
+
+    function renderStep0 () {
+      const el = h(`
+        <div>
+          <h2>Configuração do Preenchimento Automático</h2>
+          <p>O preenchimento automático precisa de um script na sua conta Google para ler os códigos do CREA.</p>
+          <p>Você já configurou esse script antes em outro computador ou navegador para <strong>${emailPattern}</strong>?</p>
+          <div class="coaf-actions" style="justify-content: flex-start !important; flex-direction: column !important; gap: 8px !important; margin-top: 24px !important;">
+            <button class="coaf-btn coaf-btn-primary" style="width: 100% !important; margin-left: 0 !important;" data-action="new">Não, é a primeira vez (Criar novo script)</button>
+            <button class="coaf-btn coaf-btn-secondary" style="width: 100% !important; margin-left: 0 !important;" data-action="existing">Sim, já configurei antes (Vincular script existente)</button>
+            <button class="coaf-btn coaf-btn-secondary" style="width: 100% !important; margin-left: 0 !important; background: transparent !important; border: 1px solid #ccc !important;" data-action="cancel">Cancelar</button>
+          </div>
+        </div>
+      `)
+
+      el.querySelector('[data-action="new"]').addEventListener('click', () => {
+        flow = 'new'
+        currentStep = 1
+        render()
+      })
+
+      el.querySelector('[data-action="existing"]').addEventListener('click', () => {
+        flow = 'existing'
+        currentStep = 1
+        render()
+      })
+
+      el.querySelector('[data-action="cancel"]').addEventListener('click', () => {
+        panelControl.close()
+        resolve(null)
+      })
+
+      return el
+    }
+
+    /* === Step 1 (New): Copy the Apps Script code === */
 
     function renderStep1 () {
       const el = h(`
@@ -380,7 +449,7 @@ export function showSetupWizard (emailPattern, appsScriptCode, token) {
           </ol>
           <textarea class="coaf-code-area" rows="6" readonly></textarea>
           <div class="coaf-actions">
-            <button class="coaf-btn coaf-btn-secondary" data-action="cancel">Cancelar</button>
+            <button class="coaf-btn coaf-btn-secondary" data-action="back">← Voltar</button>
             <button class="coaf-btn coaf-btn-primary" data-action="copy">Copiar código</button>
             <button class="coaf-btn coaf-btn-primary" data-action="next">Próximo →</button>
           </div>
@@ -397,20 +466,20 @@ export function showSetupWizard (emailPattern, appsScriptCode, token) {
         })
       })
 
+      el.querySelector('[data-action="back"]').addEventListener('click', () => {
+        currentStep = 0
+        render()
+      })
+
       el.querySelector('[data-action="next"]').addEventListener('click', () => {
         currentStep = 2
         render()
       })
 
-      el.querySelector('[data-action="cancel"]').addEventListener('click', () => {
-        panelControl.close()
-        resolve(null)
-      })
-
       return el
     }
 
-    /* === Step 2: Publish as Web App === */
+    /* === Step 2 (New): Publish as Web App === */
 
     function renderStep2 () {
       const el = h(`
@@ -450,7 +519,7 @@ export function showSetupWizard (emailPattern, appsScriptCode, token) {
       return el
     }
 
-    /* === Step 3: Paste the URL === */
+    /* === Step 3 (New): Paste the URL === */
 
     function renderStep3 () {
       const el = h(`
@@ -495,7 +564,85 @@ export function showSetupWizard (emailPattern, appsScriptCode, token) {
         }
 
         panelControl.close()
-        resolve({ endpoint: url, token })
+        resolve({ endpoint: url, token }) // Uses auto-generated token
+      })
+
+      return el
+    }
+
+    /* === Alternative Step 1 (Existing): Fetch Script Data === */
+
+    function renderAltStep1 () {
+      const el = h(`
+        <div>
+          <div class="coaf-step-indicator">Passo único</div>
+          <h2>Vincular script existente</h2>
+          <p>Acesse o <a href="https://script.google.com/home" target="_blank" rel="noopener">Google Apps Script</a> e abra o projeto que você já havia criado para este e-mail.</p>
+          
+          <label class="coaf-label">URL de Implantação (Web App)</label>
+          <input
+            class="coaf-input"
+            type="url"
+            placeholder="https://script.google.com/macros/s/…/exec"
+            spellcheck="false"
+            id="coaf-alt-url"
+          />
+
+          <label class="coaf-label" style="margin-top: 12px !important;">Código do script (para recuperarmos o token)</label>
+          <textarea 
+            class="coaf-code-area" 
+            rows="4" 
+            placeholder="Cole todo o código do script aqui..." 
+            id="coaf-alt-code"
+          ></textarea>
+
+          <div class="coaf-error-text" style="display:none"></div>
+
+          <div class="coaf-actions">
+            <button class="coaf-btn coaf-btn-secondary" data-action="back">← Voltar</button>
+            <button class="coaf-btn coaf-btn-primary" data-action="save">Salvar configuração</button>
+          </div>
+        </div>
+      `)
+
+      const inputUrl = el.querySelector('#coaf-alt-url')
+      const inputCode = el.querySelector('#coaf-alt-code')
+      const errorText = el.querySelector('.coaf-error-text')
+
+      el.querySelector('[data-action="back"]').addEventListener('click', () => {
+        currentStep = 0
+        render()
+      })
+
+      el.querySelector('[data-action="save"]').addEventListener('click', () => {
+        errorText.style.display = 'none'
+        inputUrl.classList.remove('coaf-input-error')
+        inputCode.classList.remove('coaf-input-error')
+
+        const url = inputUrl.value.trim()
+        const code = inputCode.value.trim()
+
+        // Validates Web App URL
+        const urlMatch = url.match(/^https?:\/\/script\.google\.com\/macros\/s\/([^/]+)\/exec$/i)
+        if (!urlMatch) {
+          inputUrl.classList.add('coaf-input-error')
+          errorText.textContent = 'URL inválida. O formato correto é: https://script.google.com/macros/s/…/exec'
+          errorText.style.display = 'block'
+          return
+        }
+
+        // Extracts Token using Regex
+        const tokenMatch = code.match(/const\s+TOKEN\s*=\s*['"]([^'"]+)['"]/i)
+        if (!tokenMatch) {
+          inputCode.classList.add('coaf-input-error')
+          errorText.textContent = 'Não foi possível encontrar o TOKEN no código colado. Certifique-se de copiar o script inteiro.'
+          errorText.style.display = 'block'
+          return
+        }
+
+        panelControl.close()
+        // Resolves with the endpoint they provided and the extracted token
+        resolve({ endpoint: url, token: tokenMatch[1] })
       })
 
       return el
@@ -541,7 +688,7 @@ export function showManagePanel (accounts, onRemove) {
         </li>
       `)
       li.querySelector('button').addEventListener('click', async () => {
-        if (confirm(`Tem certeza que deseja remover a configuração de ${acct}?`)) {
+        if (window.confirm(`Tem certeza que deseja remover a configuração de ${acct}?`)) {
           await onRemove(acct)
           li.remove()
           if (!ul.children.length) {

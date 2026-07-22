@@ -4,6 +4,7 @@
  * In the user script we use GM_xmlhttpRequest (allows cross-origin requests).
  * In the extension we use fetch (allowed via manifest permissions).
  */
+/* global __BUILD_TARGET__ */
 
 /**
  * Fetches the OTP code from the configured endpoint.

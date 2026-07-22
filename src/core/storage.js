@@ -7,7 +7,7 @@
  * In the user script we use GM_getValue / GM_setValue.
  * In the extension we use browser.storage.local.
  */
-/* global GM_getValue, GM_setValue, GM_deleteValue, GM_listValues */
+/* global GM_getValue, GM_setValue, GM_deleteValue, GM_listValues, __BUILD_TARGET__ */
 
 // User-script helpers
 const gmStorage = {

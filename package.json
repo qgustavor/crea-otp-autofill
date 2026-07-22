@@ -13,7 +13,11 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0",
-    "neostandard": "^0.12.0"
-  }
+    "esbuild": "^0.28.1",
+    "eslint": "9",
+    "neostandard": "^0.13.0"
+  },
+  "trustedDependencies": [
+    "unrs-resolver"
+  ]
 }
