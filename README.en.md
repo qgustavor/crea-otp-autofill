@@ -1,6 +1,6 @@
 # CREA-GO OTP Autofill
 
-Automatic OTP (two-step verification) code filling for the [CREANET](https://creanet.crea-go.org.br/) portal of CREA-GO (Regional Council of Engineering and Agronomy of Goiás, Brazil).
+Automatic OTP ("two-step" verification) code filling for the [CREANET](https://creanet.crea-go.org.br/) portal of CREA-GO (Regional Council of Engineering and Agronomy of Goiás, Brazil).
 
 > [🇧🇷 Versão em português](README.md)
 
@@ -38,12 +38,13 @@ On first use, the system guides you through creating the Apps Script in your Goo
 
 ### Threat model
 
-The OTP code alone is useless without the CREA account password. Even in a total leak scenario (someone obtains the endpoint + token), the most they could get is the last OTP code generated. Additionally, CREA password recovery requires authentication via [gov.br](https://www.gov.br/) which often requires facial recognition.
+The OTP code alone is useless without the CREA account password. Even in a total leak scenario (someone obtains the endpoint + token), the most they could get is the last OTP code generated.
 
 ### Measures
 
+- **Credential encryption**: credentials for the Apps Script API returning the OTP are stored in an encrypted state using the user's login identification (CPF or CNPJ). This encryption prevents anyone from retrieving the OTP unless they possess the user's credentials (their CPF or CNPJ number).
 - **Token authentication**: the Apps Script endpoint requires a 256-bit token generated locally in the browser. Without the correct token, the endpoint returns an error.
-- **Isolated storage**: credentials (endpoint URL + token) are stored in the extension's or user-script manager's internal storage. They are not exposed in the source code.
+- **Isolated storage**: encrypted credentials (endpoint URL + token) are stored in the extension's or user-script manager's internal storage. They are not exposed in the source code.
 - **Encryption in transit**: all communications use HTTPS (Google Apps Script requires HTTPS).
 - **Minimal scope**: the Apps Script only has permission to read Gmail emails. It never modifies, sends, or deletes anything.
 - **Open source**: all code is public and auditable.
@@ -52,6 +53,7 @@ The OTP code alone is useless without the CREA account password. Even in a total
 
 For those who want to audit or understand the internal mechanisms:
 
+- Local credential encryption uses PBKDF2 with 100,000 rounds for key derivation derived from the user's CPF/CNPJ, combined with AES-GCM for data encryption.
 - Tokens are generated with `crypto.getRandomValues(new Uint8Array(32))` and hex-encoded (64 characters, 256 bits of entropy). This is the W3C-recommended standard mechanism for generating cryptographically secure values in browsers.
 - In the user-script, storage uses the `GM_getValue` / `GM_setValue` APIs from the script manager (Tampermonkey, Violentmonkey, etc.), which isolate data per script.
 - In the extension, it uses `browser.storage.local`, which is isolated per extension and inaccessible to web pages.
@@ -60,31 +62,28 @@ For those who want to audit or understand the internal mechanisms:
 
 Each configuration is associated with the email pattern that CREA shows on the login screen (e.g., `ex***le@g***.com`). You can configure as many accounts as you want — each with its own Apps Script.
 
-For corporate email forwarding scenarios (all emails from `@company.com` going to a single account), it's possible to configure by domain by directly editing the extension's/user-script's storage. This is an advanced configuration that does not appear in the interface.
-
 ## Development
 
 ### Requirements
 
-- Node.js 18+
-- npm
+- Bun 1.0+
 
 ### Setup
 
 ```bash
 git clone https://github.com/qgustavor/crea-otp-autofill.git
 cd crea-otp-autofill
-npm install
+bun install
 ```
 
 ### Build
 
 ```bash
-npm run build            # Build everything
-npm run build:userscript # User-script only
-npm run build:extension  # Extension only
+bun run build            # Build everything
+bun run build:userscript # User-script only
+bun run build:extension  # Extension only
 
-npm run watch            # Rebuild on save
+bun run watch            # Rebuild on save
 ```
 
 Compiled files go to `dist/`:
@@ -100,11 +99,11 @@ dist/
 
 ### Lint
 
-The project uses [neostandard](https://github.com/neostandard/neostandard) (single quotes, no semicolons):
+The project uses [neostandard](https://github.com/neostandard/neostandard):
 
 ```bash
-npm run lint
-npm run lint:fix
+bun run lint
+bun run lint:fix
 ```
 
 ### Code structure
@@ -114,7 +113,7 @@ src/
 ├── core/                        ← Shared code (user-script + extension)
 │   ├── main.js                  ← Main logic and orchestration
 │   ├── storage.js               ← Storage abstraction (GM_* vs browser.storage)
-│   ├── crypto.js                ← Token generation
+│   ├── crypto.js                ← Tokens and encryption
 │   ├── fetcher.js               ← Apps Script communication
 │   ├── apps-script-template.js  ← Apps Script code generator
 │   └── ui.js                    ← Setup wizard and messages UI
@@ -137,13 +136,19 @@ The build uses [esbuild](https://esbuild.github.io/), which compiles each entry 
 
 Releases are automated via GitHub Actions. To publish a new version:
 
-1. Update the version in `package.json`
-2. Create a tag: `git tag v2.0.0 && git push --tags`
-3. CI builds the project and creates the release with the ready-to-use files
+1. Increment the version and generate the release tag automatically:
+   ```bash
+   bun pm version patch   # or minor / major
+   ```
+2. Push the commit and tag to GitHub:
+   ```bash
+   git push --follow-tags
+   ```
+3. CI builds the project and creates the release with the ready-to-use files.
 
 ## Contributing
 
-This project was developed with the help of [Claude](https://claude.ai/) (Anthropic). Contributions, issues, and suggestions are welcome.
+This project was developed with the help of [Claude](https://claude.ai/) (Anthropic) and [Gemini](https://aistudio.google.com/) (Google). Contributions, issues, and suggestions are welcome.
 
 ## License
 

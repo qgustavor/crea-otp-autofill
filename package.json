@@ -1,6 +1,6 @@
 {
   "name": "crea-otp-autofill",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "description": "Preenchimento automático de OTP para o portal CREANET (CREA-GO)",
   "author": "qgustavor (https://github.com/qgustavor/)",

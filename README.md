@@ -1,6 +1,6 @@
 # CREA-GO OTP Autofill
 
-Preenchimento automático de códigos OTP (verificação em duas etapas) para o portal [CREANET](https://creanet.crea-go.org.br/) do CREA-GO.
+Preenchimento automático de códigos OTP para o portal [CREANET](https://creanet.crea-go.org.br/) do CREA-GO.
 
 > [🇬🇧 English version](README.en.md)
 
@@ -38,12 +38,13 @@ Na primeira vez, o sistema guia você para criar o Apps Script na sua conta Goog
 
 ### Modelo de ameaça
 
-O código OTP sozinho é inútil sem a senha da conta do CREA. Mesmo em um cenário de vazamento total (alguém obtém acesso ao endpoint + token), o máximo que conseguiria é o último código OTP gerado. Além disso, a recuperação de senha do CREA exige autenticação via [gov.br](https://www.gov.br/), o que geralmente envolve aquele reconhecimento facial enjoado.
+O código OTP sozinho é inútil sem a senha da conta do CREA. Mesmo em um cenário de vazamento total (alguém obtém acesso ao endpoint + token), o máximo que conseguiria é o último código OTP gerado.
 
 ### Medidas
 
+- **Criptografia de credenciais**: as credenciais da API do Apps Script que retorna o OTP são armazenadas de forma criptografada, utilizando a identificação de login do usuário (CPF ou CNPJ). Essa etapa impede que terceiros obtenham o OTP a menos que possuam as credenciais do usuário (CPF/CNPJ).
 - **Autenticação por token**: o endpoint do Apps Script exige um token de 256 bits gerado localmente no navegador. Sem o token correto, o endpoint retorna erro.
-- **Armazenamento isolado**: as credenciais (URL do endpoint + token) ficam no armazenamento interno da extensão ou do gerenciador de user-scripts. Não são expostas no código-fonte.
+- **Armazenamento isolado**: as credenciais criptografadas ficam no armazenamento interno da extensão ou do gerenciador de user-scripts, e não são expostas no código-fonte.
 - **Criptografia em trânsito**: todas as comunicações usam HTTPS (Google Apps Script exige HTTPS).
 - **Escopo mínimo**: o Apps Script tem permissão apenas para ler e-mails do Gmail. Não modifica, envia ou exclui nada.
 - **Código aberto**: todo o código é público e auditável.
@@ -52,6 +53,7 @@ O código OTP sozinho é inútil sem a senha da conta do CREA. Mesmo em um cená
 
 Para quem quiser auditar ou entender os mecanismos internos:
 
+- A criptografia local das credenciais utiliza PBKDF2 com 100.000 rodadas para derivação de chave a partir do CPF/CNPJ do usuário e AES-GCM para a cifragem dos dados.
 - Tokens são gerados com `crypto.getRandomValues(new Uint8Array(32))` e codificados em hexadecimal (64 caracteres, 256 bits de entropia). Este é o mecanismo padrão recomendado pelo W3C para geração de valores criptograficamente seguros em navegadores.
 - No user-script, o armazenamento usa as APIs `GM_getValue` / `GM_setValue` do gerenciador de scripts (Tampermonkey, Violentmonkey, etc.), que isolam os dados por script.
 - Na extensão, usa `browser.storage.local`, que é isolado por extensão e inacessível a páginas web.
@@ -60,31 +62,28 @@ Para quem quiser auditar ou entender os mecanismos internos:
 
 Cada configuração é associada ao padrão de e-mail que o CREA mostra na tela de login (ex.: `ex***lo@g***.com`). Você pode configurar quantas contas quiser — cada uma com seu próprio Apps Script.
 
-Para cenários com redirecionamento de e-mails corporativos (todos os e-mails de `@empresa.com` vão para uma única conta), é possível configurar por domínio editando diretamente o armazenamento da extensão/user-script. Essa é uma configuração avançada que não aparece na interface.
-
 ## Desenvolvimento
 
 ### Requisitos
 
-- Node.js 18+
-- npm
+- Bun 1.0+
 
 ### Setup
 
 ```bash
 git clone https://github.com/qgustavor/crea-otp-autofill.git
 cd crea-otp-autofill
-npm install
+bun install
 ```
 
 ### Build
 
 ```bash
-npm run build            # Compila tudo
-npm run build:userscript # Apenas o user-script
-npm run build:extension  # Apenas a extensão
+bun run build            # Compila tudo
+bun run build:userscript # Apenas o user-script
+bun run build:extension  # Apenas a extensão
 
-npm run watch            # Recompila ao salvar
+bun run watch            # Recompila ao salvar
 ```
 
 Os arquivos compilados ficam em `dist/`:
@@ -103,8 +102,8 @@ dist/
 O projeto usa [neostandard](https://github.com/neostandard/neostandard):
 
 ```bash
-npm run lint
-npm run lint:fix
+bun run lint
+bun run lint:fix
 ```
 
 ### Estrutura do código
@@ -114,7 +113,7 @@ src/
 ├── core/                        ← Código compartilhado (user-script + extensão)
 │   ├── main.js                  ← Lógica principal e orquestração
 │   ├── storage.js               ← Abstração de armazenamento (GM_* vs browser.storage)
-│   ├── crypto.js                ← Geração de tokens
+│   ├── crypto.js                ← Geração de tokens e criptografia
 │   ├── fetcher.js               ← Comunicação com o Apps Script
 │   ├── apps-script-template.js  ← Gerador do código do Apps Script
 │   └── ui.js                    ← Interface do wizard e mensagens
@@ -137,9 +136,15 @@ O build usa [esbuild](https://esbuild.github.io/), que compila cada entry point 
 
 As releases são automatizadas via GitHub Actions. Para publicar uma nova versão:
 
-1. Atualize a versão usando `npm version [versão nova]`
-2. Dê push com a nova tag usando `git push --tags`
-3. O CI compila o projeto e cria a release com os arquivos prontos
+1. Incremente a versão e crie a tag automaticamente:
+   ```bash
+   bun pm version patch   # ou minor / major
+   ```
+2. Envie o commit e a nova tag para o GitHub:
+   ```bash
+   git push --follow-tags
+   ```
+3. O CI compila o projeto e cria a release com os arquivos prontos.
 
 ## Contribuição
 
