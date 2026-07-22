@@ -1,6 +1,7 @@
 name: Build & Release
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
@@ -23,7 +24,7 @@ jobs:
           FIREFOX_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
           FIREFOX_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
         run: |
-          npx web-ext sign \
+          bun x web-ext sign \
             --source-dir dist/extension \
             --channel unlisted \
             --api-key "${FIREFOX_API_KEY}" \
