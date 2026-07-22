@@ -13,6 +13,7 @@ const userscriptBanner = `// ==UserScript==
 // @name         CREA-GO OTP Autofill
 // @version      ${VERSION}
 // @description  Preenchimento automático de OTP para o portal CREANET
+// @match        https://creanet.crea-go.org.br/usuario/login
 // @match        https://creanet.crea-go.org.br/usuario/valida-login
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
@@ -46,7 +47,7 @@ async function buildUserscript () {
   mkdirSync(join(distDir, 'userscript'), { recursive: true })
   const code = userscriptBanner + '\n' + result.outputFiles[0].text
   writeFileSync(join(distDir, 'userscript', 'crea-otp-autofill.user.js'), code)
-  console.log('[userscript] built → dist/userscript/crea-otp-autofill.user.js')
+  console.log('[userscript] built -> dist/userscript/crea-otp-autofill.user.js')
 }
 
 async function buildExtension () {
@@ -82,7 +83,7 @@ async function buildExtension () {
     writeFileSync(manifestPath, manifest)
   }
 
-  console.log('[extension] built → dist/extension/')
+  console.log('[extension] built -> dist/extension/')
 }
 
 async function main () {

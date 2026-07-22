@@ -40,43 +40,65 @@ export async function init (platform) {
     await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve))
   }
 
-  // Adds a wait message to the CREA loading screen
-  setLoadingMessage('Aguarde…')
+  const path = window.location.pathname
 
-  // Checks if we are on the OTP validation page
-  // Waits a bit for the CREA Angular to render the fields
-  const isOTPPage = await waitForElement('#digito1', 3000)
-  if (!isOTPPage) {
-    // Not the OTP screen — might be the regular login screen
+  if (path === '/usuario/login') {
+    // Login page — show the settings button so users can manage accounts
     injectSettingsButton()
     return
   }
 
-  injectSettingsButton()
-  await run()
+  if (path === '/usuario/valida-login') {
+    // OTP validation page — run the auto-fill flow
+    setLoadingMessage('Aguarde…')
+
+    // Waits for the CREA Angular to render the OTP fields
+    const isOTPPage = await waitForElement('#digito1', 3000)
+    if (!isOTPPage) return
+
+    await run()
+  }
 }
 
 /**
- * Injects a discreet settings button into the page.
+ * Reads the user's CPF/CNPJ from the CREA session, used as the encryption
+ * passphrase for stored credentials.
+ * @returns {string | null}
+ */
+function getCPF () {
+  try {
+    const encoded = sessionStorage.getItem('creanet')
+    if (!encoded) return null
+    return atob(encoded)
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Injects the "CREA OTP Auto-Fill" button on the login page (top-right).
  */
 function injectSettingsButton () {
   if (!document.body) return
 
   const btn = document.createElement('div')
-  
-  btn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`
-  btn.title = 'CREA OTP Autofill — Configurações'
-  
-  // Placed on the right side with z-index: 9998 so it stays hidden behind CREA's #loading-screen (z-index: 9999)
-  btn.style.cssText = `
-    position: fixed !important; bottom: 12px !important; right: 12px !important; z-index: 9998 !important;
-    width: 36px !important; height: 36px !important; border-radius: 50% !important;
-    background: rgba(255,255,255,0.9) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-    display: flex !important; align-items: center !important; justify-content: center !important;
-    cursor: pointer !important; color: #555 !important;
-    transition: transform 0.15s !important;
+
+  btn.innerHTML = `
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    <span>CREA OTP Auto-Fill</span>
   `
-  btn.addEventListener('mouseenter', () => { btn.style.transform = 'scale(1.15)' })
+  btn.title = 'CREA OTP Auto-Fill — Gerenciar contas configuradas'
+
+  btn.style.cssText = `
+    position: fixed !important; top: 12px !important; right: 12px !important; z-index: 9998 !important;
+    padding: 6px 14px !important; border-radius: 20px !important;
+    background: rgba(255,255,255,0.95) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    display: flex !important; align-items: center !important; gap: 6px !important;
+    cursor: pointer !important; color: #555 !important;
+    font-family: 'Open Sans', Arial, sans-serif !important; font-size: 13px !important; font-weight: 600 !important;
+    transition: transform 0.15s !important; user-select: none !important;
+  `
+  btn.addEventListener('mouseenter', () => { btn.style.transform = 'scale(1.05)' })
   btn.addEventListener('mouseleave', () => { btn.style.transform = 'scale(1)' })
   btn.addEventListener('click', openSettings)
   document.body.appendChild(btn)
@@ -109,13 +131,25 @@ async function run () {
     return
   }
 
-  // 2. Checks if there is a configured endpoint
-  let config = await getAccount(emailPattern)
+  // 2. Reads the CPF/CNPJ from the CREA session (used as the decryption key)
+  const cpf = getCPF()
+
+  if (!cpf) {
+    hideLoadingScreen()
+    showInlineMessage(
+      'Não foi possível recuperar os dados da sessão do CREA. ' +
+      'Preencha o código manualmente.'
+    )
+    return
+  }
+
+  // 3. Checks if there is a configured endpoint
+  let config = await getAccount(emailPattern, cpf)
 
   // Also tries by domain (for manual domain configurations)
   if (!config) {
     const domain = emailPattern.split('@').at(-1)
-    if (domain) config = await getAccount(domain)
+    if (domain) config = await getAccount(domain, cpf)
   }
 
   if (!config) {
@@ -130,7 +164,7 @@ async function run () {
     return
   }
 
-  // 3. Fetches the OTP code
+  // 4. Fetches the OTP code
   setLoadingMessage('Buscando código…')
   await pollForCode(config, emailPattern)
 }
@@ -171,8 +205,11 @@ async function startSetup (emailPattern) {
   const result = await showSetupWizard(emailPattern, scriptCode, token)
 
   if (result) {
-    // Saves the configuration
-    await setAccount(emailPattern, result)
+    // Saves the configuration (encrypted with the CPF)
+    const cpf = getCPF()
+    if (cpf) {
+      await setAccount(emailPattern, result, cpf)
+    }
 
     // Shows feedback and starts fetching
     showInlineMessage('Configuração salva! Buscando código…')
@@ -183,6 +220,9 @@ async function startSetup (emailPattern) {
 
 /**
  * Fetches the OTP code in a loop until found or expired.
+ * Handles structured errors from the fetcher:
+ *   - unauthorized → deletes account, offers re-setup
+ *   - unexpected   → shows error, asks user to fill manually
  * @param {{ endpoint: string, token: string }} config
  * @param {string} emailPattern
  */
@@ -190,13 +230,41 @@ async function pollForCode (config, emailPattern) {
   const startTime = Date.now()
 
   while (Date.now() - startTime < MAX_DURATION) {
-    const code = await fetchOTP(config, emailPattern)
+    const result = await fetchOTP(config, emailPattern)
 
-    if (code) {
-      fillAndSubmit(code, config, emailPattern)
+    // Token rejected — delete the stale account and let the user re-configure
+    if (result.error === 'unauthorized') {
+      await removeAccount(emailPattern)
+      hideLoadingScreen()
+      showInlineMessage(
+        `O token de autenticação para <strong>${emailPattern}</strong> foi recusado pelo Apps Script. ` +
+        'Isso pode acontecer se o token foi alterado.',
+        {
+          actionLabel: 'Configurar novamente',
+          onAction: () => startSetup(emailPattern)
+        }
+      )
       return
     }
 
+    // Unexpected response (HTML page, malformed JSON, etc.)
+    if (result.error === 'unexpected') {
+      hideLoadingScreen()
+      showInlineMessage(
+        'O script no Apps Script retornou uma resposta inesperada. ' +
+        'Pode ser um erro temporário no servidor. ' +
+        'Preencha o código manualmente.'
+      )
+      return
+    }
+
+    // Code found — fill and submit
+    if (result.code) {
+      fillAndSubmit(result.code, config, emailPattern)
+      return
+    }
+
+    // code is null — not arrived yet, wait and retry
     await sleep(RETRY_INTERVAL)
   }
 
@@ -255,7 +323,7 @@ async function watchForInvalidCode (config, emailPattern) {
 }
 
 /**
- * Hides the CREA loading screen, releasing our lock so the original 
+ * Hides the CREA loading screen, releasing our lock so the original
  * layout/inline styles can take effect.
  */
 function hideLoadingScreen () {
