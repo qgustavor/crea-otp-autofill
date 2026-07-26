@@ -10,14 +10,23 @@
 //   2. Este script verifica se o token está correto.
 //   3. Se estiver, ele procura nos seus e-mails recentes
 //      a mensagem do CREA com o código de 6 dígitos.
-//   4. Retorna o código para o navegador preencher.
+//   4. Retorna o código para o navegador preencher, junto com
+//      a data/hora em que o e-mail foi recebido — assim o
+//      navegador consegue ignorar códigos antigos (de um
+//      login anterior) em vez de reenviá-los ao CREA.
 //
 // Segurança:
 //   - Apenas quem possui o token abaixo consegue consultar.
 //   - O script só lê e-mails do CREA, nunca modifica nada.
 //   - No pior caso, um código OTP sozinho é inútil sem a
 //     senha da conta do CREA.
-// ============================================================
+//
+// Formato da resposta (JSON):
+//   { status: 'unauthorized' }                        -> token inválido
+//   { status: 'pending' }                             -> nenhum código encontrado ainda
+//   { status: 'ok', code, codeTimestamp }             -> código encontrado
+//     - code: string de 6 caracteres alfanuméricos
+//     - codeTimestamp: data do e-mail em milissegundos (epoch)
 
 // Token de autenticação — gerado automaticamente.
 // Não compartilhe este valor com ninguém.
@@ -30,7 +39,7 @@ const TOKEN = '{{token}}'
 function doGet (e) {
   // Verifica se o token de autenticação é válido
   if (!e.parameter.token || e.parameter.token !== TOKEN) {
-    return jsonResponse({ error: 'unauthorized' })
+    return jsonResponse({ status: 'unauthorized' })
   }
 
   // Busca e-mails do CREA dos últimos 10 minutos
@@ -40,7 +49,7 @@ function doGet (e) {
   const threads = GmailApp.search(query, 0, 10)
 
   if (!threads.length) {
-    return jsonResponse({ code: null })
+    return jsonResponse({ status: 'pending' })
   }
 
   // Identifica qual e-mail corresponde ao padrão fornecido
@@ -80,15 +89,25 @@ function doGet (e) {
   }
 
   if (!targetMessage) {
-    return jsonResponse({ code: null })
+    return jsonResponse({ status: 'pending' })
   }
 
   // Extrai o código de 6 caracteres alfanuméricos do corpo do e-mail
   const body = targetMessage.getBody()
   const match = body.match(/<span[^>]*>\s+\b([A-Z0-9]{6})\b\s+<\/span>/)
-  const code = match ? match[1] : null
 
-  return jsonResponse({ code })
+  if (!match) {
+    return jsonResponse({ status: 'pending' })
+  }
+
+  return jsonResponse({
+    status: 'ok',
+    code: match[1],
+    // Data em que o CREA enviou o e-mail (não a data em que o
+    // buscamos), usada pelo navegador para descartar códigos
+    // de um login anterior.
+    codeTimestamp: targetMessage.getDate().getTime()
+  })
 }
 
 /** Essa função retorna uma resposta em formato JSON */
