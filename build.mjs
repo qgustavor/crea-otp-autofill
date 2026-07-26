@@ -9,8 +9,20 @@ const target = targetArg ? targetArg.split('=')[1] : 'all'
 
 const VERSION = JSON.parse(readFileSync('package.json', 'utf8')).version
 
+const REPO = 'qgustavor/crea-otp-autofill'
+const USERSCRIPT_FILENAME = 'crea-otp-autofill.user.js'
+const META_FILENAME = 'crea-otp-autofill.meta.js'
+
+// @updateURL points at the small metadata-only file below, so userscript
+// managers can poll just the header to check for a new @version instead
+// of redownloading the whole bundle. @downloadURL is what they then fetch
+// if an update is found. Both use GitHub's "latest release" redirect, so
+// they always resolve to whatever was most recently published as a
+// release — not whatever's on `main`, which could be mid-work or have an
+// unbumped version.
 const userscriptBanner = `// ==UserScript==
 // @name         CREA-GO OTP Autofill
+// @namespace    https://github.com/${REPO}
 // @version      ${VERSION}
 // @description  Preenchimento automático de OTP para o portal CREANET
 // @match        https://creanet.crea-go.org.br/usuario/login
@@ -23,8 +35,10 @@ const userscriptBanner = `// ==UserScript==
 // @grant        GM_addStyle
 // @connect      script.google.com
 // @run-at       document-start
-// @homepageURL  https://github.com/qgustavor/crea-otp-autofill
-// @supportURL   https://github.com/qgustavor/crea-otp-autofill/issues
+// @homepageURL  https://github.com/${REPO}
+// @supportURL   https://github.com/${REPO}/issues
+// @updateURL    https://github.com/${REPO}/releases/latest/download/${META_FILENAME}
+// @downloadURL  https://github.com/${REPO}/releases/latest/download/${USERSCRIPT_FILENAME}
 // @license      MIT
 // ==/UserScript==
 `
@@ -46,8 +60,11 @@ async function buildUserscript () {
 
   mkdirSync(join(distDir, 'userscript'), { recursive: true })
   const code = userscriptBanner + '\n' + result.outputFiles[0].text
-  writeFileSync(join(distDir, 'userscript', 'crea-otp-autofill.user.js'), code)
-  console.log('[userscript] built -> dist/userscript/crea-otp-autofill.user.js')
+  writeFileSync(join(distDir, 'userscript', USERSCRIPT_FILENAME), code)
+  // Metadata-only sidecar for cheap update checks (see comment above).
+  writeFileSync(join(distDir, 'userscript', META_FILENAME), userscriptBanner)
+  console.log(`[userscript] built -> dist/userscript/${USERSCRIPT_FILENAME}`)
+  console.log(`[userscript] meta  -> dist/userscript/${META_FILENAME}`)
 }
 
 async function buildExtension () {

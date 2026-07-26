@@ -37,4 +37,5 @@ jobs:
           generate_release_notes: true
           files: |
             dist/userscript/crea-otp-autofill.user.js
+            dist/userscript/crea-otp-autofill.meta.js
             dist/signed/*.xpi
