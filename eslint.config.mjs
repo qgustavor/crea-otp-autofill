@@ -3,7 +3,7 @@ import neostandard, { resolveIgnoresFromGitignore } from 'neostandard'
 export default [
   ...neostandard({
     ignores: resolveIgnoresFromGitignore(),
-    globals: ['browser', 'ContentService', 'GmailApp']
+    globals: ['browser', 'ContentService', 'GmailApp', 'PropertiesService', 'MailApp', 'Session']
   }),
 
   // Import attributes (`with { type: 'text' }`, used for the .css and
