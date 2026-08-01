@@ -105,3 +105,105 @@ export async function listAccounts () {
     .filter(k => k.startsWith(ACCOUNT_PREFIX))
     .map(k => k.slice(ACCOUNT_PREFIX.length))
 }
+
+/**
+ * Exports all configured accounts exactly as stored.
+ * @returns {Promise<{
+ *   format: 'crea-otp-autofill',
+ *   version: 1,
+ *   exportedAt: string,
+ *   accounts: Record<string, string>
+ * }>}
+ */
+export async function exportAccounts () {
+  const accounts = {}
+
+  for (const key of await backend.listKeys()) {
+    if (!key.startsWith(ACCOUNT_PREFIX)) continue
+
+    accounts[key.slice(ACCOUNT_PREFIX.length)] = await backend.get(key)
+  }
+
+  return {
+    format: 'crea-otp-autofill',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    accounts
+  }
+}
+
+/**
+ * Imports an account export created by exportAccounts().
+ * Existing accounts are overwritten.
+ * @param {unknown} data
+ */
+export async function importAccounts (data) {
+  const accounts = validateImportData(data)
+
+  for (const [emailPattern, encrypted] of Object.entries(accounts)) {
+    if (typeof encrypted !== 'string') {
+      throw new Error(`Invalid account entry: ${emailPattern}`)
+    }
+
+    await backend.set(ACCOUNT_PREFIX + emailPattern, encrypted)
+  }
+}
+
+/**
+ * Validates an exported account bundle.
+ * @param {unknown} data
+ * @returns {Record<string, string>}
+ * @throws {Error} If the bundle is invalid.
+ */
+function validateImportData (data) {
+  if (
+    !data ||
+    typeof data !== 'object' ||
+    data.format !== 'crea-otp-autofill' ||
+    data.version !== 1 ||
+    typeof data.accounts !== 'object' ||
+    data.accounts === null ||
+    Array.isArray(data.accounts)
+  ) {
+    throw new Error('Invalid export file.')
+  }
+
+  return data.accounts
+}
+
+/**
+ * Inspects an exported account bundle without importing it.
+ * @param {unknown} data
+ * @returns {Promise<{
+ *   new: string[],
+ *   identical: string[],
+ *   conflicts: string[]
+ * }>}
+ */
+export async function inspectImport (data) {
+  const accounts = validateImportData(data)
+
+  const report = {
+    new: [],
+    identical: [],
+    conflicts: []
+  }
+
+  for (const [emailPattern, imported] of Object.entries(accounts)) {
+    if (typeof imported !== 'string') {
+      throw new Error(`Invalid account entry: ${emailPattern}`)
+    }
+
+    const current = await backend.get(ACCOUNT_PREFIX + emailPattern)
+
+    if (current == null) {
+      report.new.push(emailPattern)
+    } else if (current === imported) {
+      report.identical.push(emailPattern)
+    } else {
+      report.conflicts.push(emailPattern)
+    }
+  }
+
+  return report
+}

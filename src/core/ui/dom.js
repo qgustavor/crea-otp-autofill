@@ -36,3 +36,26 @@ export function openPanel (contentEl) {
 
   return { close }
 }
+
+/**
+ * Escapes a HTML attribute
+ * @param {string} str — The attribute content.
+ * @returns {string} — The escaped string.
+ */
+export function escapeAttr (str) {
+  return escapeHtml(str)
+}
+
+/**
+ * Escapes a HTML string
+ * @param {string} str — The string to be escaped.
+ * @returns {string} — The escaped string.
+ */
+export function escapeHtml (str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}

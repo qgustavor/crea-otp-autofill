@@ -3,7 +3,7 @@
  * and the account-management panel it opens.
  */
 
-import { listAccounts, removeAccount } from '../storage.js'
+import { listAccounts, removeAccount, exportAccounts, importAccounts, inspectImport } from '../storage.js'
 import { showManagePanel } from '../ui/index.js'
 
 /**
@@ -39,8 +39,11 @@ export function injectSettingsButton () {
  * Opens the account management panel.
  */
 async function openSettings () {
-  const accounts = await listAccounts()
-  showManagePanel(accounts, async emailPattern => {
-    await removeAccount(emailPattern)
+  showManagePanel({
+    getAccounts: listAccounts,
+    onRemove: removeAccount,
+    onExport: exportAccounts,
+    onInspectImport: inspectImport,
+    onImport: importAccounts
   })
 }
