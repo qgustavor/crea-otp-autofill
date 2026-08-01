@@ -17,19 +17,51 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - run: bun install --frozen-lockfile
+      - run: bun run lint
       - run: bun run build
 
-      - name: Sign Firefox Extension
+      - name: Package source code
+        # AMO requires reviewable source whenever a build process
+        # (bundling, transpiling, minifying) is used - see
+        # REVIEWER_NOTES.md and BUILD_INSTRUCTIONS.md.
+        run: |
+          mkdir -p dist/source
+          zip -r dist/source/source-code.zip \
+            src \
+            build.mjs \
+            package.json \
+            bun.lock \
+            eslint.config.mjs \
+            LICENSE \
+            README.md README.en.md \
+            PRIVACY.md PRIVACY.en.md \
+            UPDATING.md \
+            REVIEWER_NOTES.md \
+            BUILD_INSTRUCTIONS.md \
+            -x '.*'
+
+      - name: Submit Firefox Extension to AMO
+        # See RELEASING.md before the very first run of this workflow -
+        # the initial listed submission still benefits from a quick
+        # manual pass over the AMO listing page (screenshots, longer
+        # description, etc.) which this step doesn't manage.
+        #
+        # --approval-timeout 0 returns immediately instead of blocking
+        # this job for however long Mozilla's review takes; the version
+        # shows up on AMO once approved, there's nothing further to do
+        # from CI.
         env:
           FIREFOX_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
           FIREFOX_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
         run: |
           bun x web-ext sign \
             --source-dir dist/extension \
-            --channel unlisted \
+            --channel listed \
             --api-key "${FIREFOX_API_KEY}" \
             --api-secret "${FIREFOX_API_SECRET}" \
-            --artifacts-dir dist/signed
+            --amo-metadata .amo/metadata.json \
+            --upload-source-code dist/source/source-code.zip \
+            --approval-timeout 0
 
       - name: Create Release
         uses: softprops/action-gh-release@v3
@@ -38,4 +70,4 @@ jobs:
           files: |
             dist/userscript/crea-otp-autofill.user.js
             dist/userscript/crea-otp-autofill.meta.js
-            dist/signed/*.xpi
+            dist/source/source-code.zip

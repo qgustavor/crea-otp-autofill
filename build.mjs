@@ -77,6 +77,7 @@ async function buildExtension () {
     format: 'iife',
     outfile: join(outDir, 'content.js'),
     target: 'es2020',
+    sourcemap: true,
     define: {
       __VERSION__: JSON.stringify(VERSION),
       __BUILD_TARGET__: JSON.stringify('extension')

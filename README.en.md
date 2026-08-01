@@ -16,7 +16,7 @@ It's useful for frequent logins or for secure access delegation (allowing someon
 
 | Browser | Method |
 |---------|--------|
-| **Firefox** (and forks) | Install the [Firefox extension](../../releases/latest) |
+| **Firefox** (and forks) | Install the [extension from AMO](https://addons.mozilla.org/firefox/addon/crea-otp-autofill/) <!-- TODO: confirm/update the slug URL after the first publication --> |
 | **Chrome, Edge, etc.** | Install a user-script manager ([Violentmonkey](https://violentmonkey.github.io/), [Tampermonkey](https://www.tampermonkey.net/)), then install the [user-script](../../releases/latest/download/crea-otp-autofill.user.js) |
 
 ### 2. Log in to CREA
@@ -54,6 +54,14 @@ Thus, the script works similarly to an auto-fill system for passwords, but with 
 - **Encryption in transit**: all communications use HTTPS (Google Apps Script requires HTTPS).
 - **Minimal scope**: the Apps Script only has permission to read Gmail emails. It never modifies, sends, or deletes anything.
 - **Open source**: all code is public and auditable.
+
+### Data collection
+
+This project sends no data to its author, to Mozilla, or to any third
+party other than the Apps Script you deploy yourself. See the
+[Privacy Policy](PRIVACY.en.md) for the full breakdown of what's stored
+and transmitted (and why Firefox shows a "data collection" notice on
+install, starting with the version published on AMO).
 
 ### Technical details
 
@@ -97,10 +105,12 @@ Compiled files go to `dist/`:
 ```
 dist/
 ├── userscript/
-│   └── crea-otp-autofill.user.js   ← User-script ready to install
+│   ├── crea-otp-autofill.user.js   ← User-script ready to install
+│   └── crea-otp-autofill.meta.js
 └── extension/
     ├── manifest.json
-    └── content.js                   ← Extension ready to load
+    ├── content.js                   ← Extension ready to load
+    └── content.js.map               ← Source map
 ```
 
 ### Lint
@@ -150,7 +160,14 @@ Releases are automated via GitHub Actions. To publish a new version:
    ```bash
    git push --follow-tags
    ```
-3. CI builds the project and creates the release with the ready-to-use files.
+3. CI builds the project, submits the extension for public review on
+   AMO (see [`RELEASING.md`](RELEASING.md) for the one-time setup
+   needed before the first submission), and publishes a GitHub release
+   containing the user-script and a `source-code.zip` — required by
+   AMO whenever the build process bundles/concatenates the source (see
+   [`REVIEWER_NOTES.md`](REVIEWER_NOTES.md)). The Firefox extension is
+   no longer distributed from here; it's only available through AMO,
+   once approved.
 
 ## Contributing
 

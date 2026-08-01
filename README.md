@@ -16,7 +16,7 @@ Quando você faz login no CREANET, o sistema envia um código de 6 dígitos por 
 
 | Navegador | Método |
 |-----------|--------|
-| **Firefox** (e forks) | Instale a [extensão para Firefox](../../releases/latest) |
+| **Firefox** (e forks) | Instale a [extensão pela AMO](https://addons.mozilla.org/firefox/addon/crea-otp-autofill/) <!-- TODO: confirmar/atualizar a URL do slug após a primeira publicação --> |
 | **Chrome, Edge, etc.** | Instale um gerenciador de user-scripts ([Violentmonkey](https://violentmonkey.github.io/), [Tampermonkey](https://www.tampermonkey.net/)) e depois instale o [user-script](../../releases/latest/download/crea-otp-autofill.user.js) |
 
 ### 2. Faça login no CREA
@@ -54,6 +54,15 @@ Dessa forma, o script atua de forma similar a um sistema de compleção automát
 - **Criptografia em trânsito**: todas as comunicações usam HTTPS (Google Apps Script exige HTTPS).
 - **Escopo mínimo**: o Apps Script tem permissão apenas para ler e-mails do Gmail. Não modifica, envia ou exclui nada.
 - **Código aberto**: todo o código é público e auditável.
+
+### Coleta de dados
+
+Este projeto não envia dados para o autor, para a Mozilla, ou para
+qualquer terceiro além do Apps Script que você mesmo cria. Veja a
+[Política de Privacidade](PRIVACY.md) para o detalhamento completo do
+que é armazenado e do que é transmitido (e por quê o Firefox mostra um
+aviso de "coleta de dados" na instalação a partir da versão publicada
+na AMO).
 
 ### Detalhes técnicos
 
@@ -97,10 +106,12 @@ Os arquivos compilados ficam em `dist/`:
 ```
 dist/
 ├── userscript/
-│   └── crea-otp-autofill.user.js   ← User-script pronto para instalar
+│   ├── crea-otp-autofill.user.js   ← User-script pronto para instalar
+│   └── crea-otp-autofill.meta.js
 └── extension/
     ├── manifest.json
-    └── content.js                   ← Extensão pronta para carregar
+    ├── content.js                   ← Extensão pronta para carregar
+    └── content.js.map               ← Source map
 ```
 
 ### Lint
@@ -150,7 +161,14 @@ As releases são automatizadas via GitHub Actions. Para publicar uma nova versã
    ```bash
    git push --follow-tags
    ```
-3. O CI compila o projeto e cria a release com os arquivos prontos.
+3. O CI compila o projeto, envia a extensão para revisão pública na
+   AMO (ver [`RELEASING.md`](RELEASING.md) para a configuração inicial
+   necessária antes do primeiro envio) e publica no GitHub uma release
+   contendo o user-script e um `source-code.zip` — exigido pela AMO
+   sempre que o processo de build empacota/agrupa o código-fonte (ver
+   [`REVIEWER_NOTES.md`](REVIEWER_NOTES.md)). A extensão para Firefox
+   deixou de ser distribuída por aqui; ela fica disponível somente
+   pela AMO, uma vez aprovada.
 
 ## Contribuição
 
