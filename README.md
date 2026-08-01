@@ -38,7 +38,13 @@ Na primeira vez, o sistema guia você para criar o Apps Script na sua conta Goog
 
 ### Modelo de ameaça
 
-O código OTP sozinho é inútil sem a senha da conta do CREA. Mesmo em um cenário de vazamento total (alguém obtém acesso ao endpoint + token), o máximo que conseguiria é o último código OTP gerado.
+Para a análise do modelo de ameaça, temos que considerar as possibilidades de ameaças:
+
+- Caso alguém consiga acessar a URL do script no Apps Script: não conseguirá acessar nenhuma informação sem o token de autenticação.
+- Caso alguém consiga acessar a URL e o token: só conseguirá acessar o último OTP da conta, se enviado nos últimos 10 minutos.
+- Caso alguém consiga acessar um computador com o user-script ou extensão instalado: não conseguirá acessar a conta sem o CPF/CNPJ da conta.
+
+Dessa forma, o script atua de forma similar a um sistema de compleção automática de senhas, porém funcionando com o OTP da conta.
 
 ### Medidas
 

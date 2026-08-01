@@ -38,7 +38,13 @@ On first use, the system guides you through creating the Apps Script in your Goo
 
 ### Threat model
 
-The OTP code alone is useless without the CREA account password. Even in a total leak scenario (someone obtains the endpoint + token), the most they could get is the last OTP code generated.
+To analyze the threat model, we must consider the following potential threats:
+
+- If someone manages to access the script's URL in Apps Script: they will not be able to access any information without the authentication token.
+- If someone manages to access both the URL and the token: they will only be able to access the account's most recent OTP, provided it was sent within the last 10 minutes.
+- If someone manages to access a computer with the user script or extension installed: they will not be able to access the account without the account's CPF/CNPJ.
+
+Thus, the script works similarly to an auto-fill system for passwords, but with the account's OTP instead.
 
 ### Measures
 
