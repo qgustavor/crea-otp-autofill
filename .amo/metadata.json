@@ -1,4 +1,8 @@
 {
+  "name": {
+    "pt-BR": "CREA OTP Autofill",
+    "en-US": "CREA OTP Autofill"
+  },
   "summary": {
     "en-US": "Automatically fills in the CREANET (CREA-GO) email OTP code, read from a Google Apps Script you deploy yourself.",
     "pt-BR": "Preenche automaticamente o código OTP por e-mail do CREANET (CREA-GO), lido de um Google Apps Script implantado por você."
@@ -19,8 +23,6 @@
     "en-US": "This extension collects no data for its developer. It only exchanges a locally-generated token and a masked email pattern with the Google Apps Script endpoint that you personally deploy under your own Google account, in order to retrieve your CREA login OTP. Full policy: https://github.com/qgustavor/crea-otp-autofill/blob/main/PRIVACY.en.md",
     "pt-BR": "Esta extensão não coleta dados para o desenvolvedor. Ela apenas troca um token gerado localmente e um padrão de e-mail mascarado com o Google Apps Script que você mesmo implanta na sua conta Google, para obter o OTP de login do CREA. Política completa: https://github.com/qgustavor/crea-otp-autofill/blob/main/PRIVACY.md"
   },
-  "version": {
-    "license": "MIT",
-    "approval_notes": "Full reviewer notes (permission justification, build reproduction steps, data-collection rationale) are in REVIEWER_NOTES.md at the repository root and inside the attached source-code.zip. Summary: this extension only talks to https://script.google.com/* (the user's own Apps Script deployment) and only runs on https://creanet.crea-go.org.br/*. It is bundled (not minified) with esbuild; source-code.zip contains the pre-build sources plus BUILD_INSTRUCTIONS.md."
-  }
+  "license": "MIT",
+  "approval_notes": "Full reviewer notes (permission justification, build reproduction steps, data-collection rationale) are in REVIEWER_NOTES.md at the repository root and inside the attached source-code.zip. Summary: this extension only talks to https://script.google.com/* (the user's own Apps Script deployment) and only runs on https://creanet.crea-go.org.br/*. It is bundled (not minified) with esbuild; source-code.zip contains the pre-build sources plus BUILD_INSTRUCTIONS.md."
 }
