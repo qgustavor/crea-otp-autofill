@@ -16,7 +16,7 @@ It's useful for frequent logins or for secure access delegation (allowing someon
 
 | Browser | Method |
 |---------|--------|
-| **Firefox** (and forks) | Install the [extension from AMO](https://addons.mozilla.org/firefox/addon/crea-otp-autofill/) <!-- TODO: confirm/update the slug URL after the first publication --> |
+| **Firefox** (and forks) | [![Get the add-on](./.amo/get-the-addon-129x45px.8041c789.png)](https://addons.mozilla.org/pt-BR/firefox/addon/0ed192e66dc0460e9413/) |
 | **Chrome, Edge, etc.** | Install a user-script manager ([Violentmonkey](https://violentmonkey.github.io/), [Tampermonkey](https://www.tampermonkey.net/)), then install the [user-script](../../releases/latest/download/crea-otp-autofill.user.js) |
 
 ### 2. Log in to CREA

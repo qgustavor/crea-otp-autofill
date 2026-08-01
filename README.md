@@ -16,7 +16,7 @@ Quando você faz login no CREANET, o sistema envia um código de 6 dígitos por 
 
 | Navegador | Método |
 |-----------|--------|
-| **Firefox** (e forks) | Instale a [extensão pela AMO](https://addons.mozilla.org/firefox/addon/crea-otp-autofill/) <!-- TODO: confirmar/atualizar a URL do slug após a primeira publicação --> |
+| **Firefox** (e forks) | [![Instale o add-on](./.amo/get-the-addon-129x45px.8041c789.png)](https://addons.mozilla.org/pt-BR/firefox/addon/0ed192e66dc0460e9413/) |
 | **Chrome, Edge, etc.** | Instale um gerenciador de user-scripts ([Violentmonkey](https://violentmonkey.github.io/), [Tampermonkey](https://www.tampermonkey.net/)) e depois instale o [user-script](../../releases/latest/download/crea-otp-autofill.user.js) |
 
 ### 2. Faça login no CREA
