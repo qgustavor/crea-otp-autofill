@@ -34,6 +34,7 @@ const userscriptBanner = `// ==UserScript==
 // @grant        GM_listValues
 // @grant        GM_addStyle
 // @connect      script.google.com
+// @connect      script.googleusercontent.com
 // @run-at       document-start
 // @homepageURL  https://github.com/${REPO}
 // @supportURL   https://github.com/${REPO}/issues
